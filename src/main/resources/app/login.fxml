@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.LoginController">
+   <left>
+      <AnchorPane prefHeight="407.0" prefWidth="228.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="401.0" fitWidth="231.0" layoutX="-2.0" layoutY="-1.0" pickOnBounds="true">
+               <image>
+                  <Image url="C:\Users\ffark\Downloads\beautiful-gradient.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="112.0" fitWidth="144.0" layoutX="58.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="C:\Users\ffark\Downloads\40868437.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="30.0" layoutY="169.0" text="Drink Stock App" textFill="WHITE">
+               <font>
+                  <Font name="Calibri" size="26.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+      <AnchorPane prefHeight="400.0" prefWidth="332.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="32.0" fitWidth="47.0" layoutX="130.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="C:\Users\ffark\Downloads\40868437.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="22.0" layoutY="138.0" text="Username" textFill="#e96151">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextField fx:id="usernameTextField" layoutX="88.0" layoutY="135.0" prefHeight="25.0" prefWidth="167.0" promptText="Username" />
+            <Label layoutX="23.0" layoutY="178.0" text="Password" textFill="#e96151">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Button fx:id="loginButton" layoutX="22.0" layoutY="267.0" mnemonicParsing="false" onAction="#onLoginButtonClick" prefHeight="32.0" prefWidth="249.0" style="-fx-background-color: #E96151;" text="Login" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="cancelButton" layoutX="22.0" layoutY="311.0" mnemonicParsing="false" onAction="#onCancelButtonClick" prefHeight="32.0" prefWidth="249.0" style="-fx-background-color: #E96151;" text="Cancel" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Label fx:id="loginErrorMessageLabel" alignment="CENTER" layoutX="10.0" layoutY="233.0" prefHeight="19.0" prefWidth="273.0" textFill="#ff5e5e">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="passwordTextField" layoutX="88.0" layoutY="175.0" prefHeight="25.0" prefWidth="167.0" promptText="Password" />
+            <Label fx:id="signUpLabel" layoutX="47.0" layoutY="358.0" onMouseClicked="#onSignUpLabelClick" text="Sign Up," textFill="#1f40ff">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Label>
+            <Label layoutX="93.0" layoutY="358.0" text="if you don't have an account." />
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>
