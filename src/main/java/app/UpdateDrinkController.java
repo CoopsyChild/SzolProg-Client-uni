@@ -9,6 +9,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpdateDrinkController {
     @FXML
     private TextField drinkNameTextField;
@@ -18,6 +21,8 @@ public class UpdateDrinkController {
     private TextField priceTextField;
     @FXML
     private TextField itemNumberTextField;
+    @FXML
+    private TextField quantityTextField;
     @FXML
     private Button cancelButton;
     @FXML
@@ -29,41 +34,52 @@ public class UpdateDrinkController {
         drinkNameTextField.setText(selectedDrink.getName());
         sizeTextField.setText(selectedDrink.getSize().toString());
         priceTextField.setText(selectedDrink.getPrice().toString());
+        quantityTextField.setText(selectedDrink.getQuantity().toString());
         itemNumberTextField.setText(selectedDrink.getItemNumber());
-        categoryChoiceBox.getSelectionModel().select(selectedDrink.getCategory());
+        List<Category> categoryObjects = APICalls.selectDrinkCategories();
+        String categoryName = null;
+        for (Category category  : categoryObjects) {
+            if (category.getId() == Integer.parseInt(selectedDrink.getCategory())){
+                categoryName=category.getName();
+            }
+        }
+        categoryChoiceBox.getSelectionModel().select(categoryName);
         itemId=selectedDrink.getId();
         initialItemNumber=selectedDrink.getItemNumber();
     }
     public void initialize(){
-        categories = FXCollections.observableArrayList(APICalls.selectDrinkCategoryNames());
+        List<Category> categoryObjects = APICalls.selectDrinkCategories();
+        List<String> categoryNames = new ArrayList<>();
+        for (Category category  : categoryObjects) {
+            categoryNames.add(category.getName());
+        }
+        categories = FXCollections.observableArrayList(categoryNames);
         categoryChoiceBox.setItems(categories);
     }
     public void onCancelButtonClick(){
         ((Stage) cancelButton.getScene().getWindow()).close();
     }
     public void onUpdateButtonClick(){
-        if(!drinkNameTextField.getText().isBlank() && !sizeTextField.getText().isBlank() && !priceTextField.getText().isBlank() && !itemNumberTextField.getText().isBlank() && categoryChoiceBox.getSelectionModel().getSelectedItem() != null) {
+        if(!quantityTextField.getText().isBlank() && !drinkNameTextField.getText().isBlank() && !sizeTextField.getText().isBlank() && !priceTextField.getText().isBlank() && !itemNumberTextField.getText().isBlank() && categoryChoiceBox.getSelectionModel().getSelectedItem() != null) {
             float size;
             int price;
+            int quantity;
             if(APICalls.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem()) != null) {
                 try {
                     size = Float.parseFloat(sizeTextField.getText());
                     price = Integer.parseInt(priceTextField.getText());
+                    quantity = Integer.parseInt(quantityTextField.getText());
                     Integer categoryId = APICalls.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem());
                     try {
-                        if(size > 0 && price >= 0) {
-                            if (initialItemNumber.equals(itemNumberTextField.getText()) || !APICalls.isItemNumberExistsForUser(itemNumberTextField.getText(), UserSession.getInstance().getId())) {
-                                if (APICalls.updateDrinkForUser(itemId, itemNumberTextField.getText(), drinkNameTextField.getText(), size, price, categoryId)) {
+                        if(size > 0 && price >= 0 && quantity >= 0) {
+                                if (APICalls.updateDrinkForUser(itemId, itemNumberTextField.getText(), drinkNameTextField.getText(), size, price, categoryId, quantity)) {
                                     showInfoDialog("Item successfully updated!", "Success.");
                                     ((Stage) cancelButton.getScene().getWindow()).close();
                                 } else {
                                     showErrorDialog("Something went wrong while updating the item. Please try again!", "DB Error");
                                 }
-                            } else {
-                                showErrorDialog("Item with this item number already exists (Original item number was: " + initialItemNumber + "). Please try again.", "Item number Error");
-                            }
                         } else {
-                            showErrorDialog("Size and Price should be greater than 0.", "Invalid value");
+                            showErrorDialog("Quantity Size and Price should be greater than 0.", "Invalid value");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -9,6 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.JsonNode;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.json.JSONObject;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -59,41 +63,13 @@ public class RegisterController implements Initializable {
     public void onRegisterButtonClick(ActionEvent event) {
         if (!passwordTextField.getText().isBlank() && !usernameTextField.getText().isBlank() && !passwordConfirmTextField.getText().isBlank() && !lastNameTextField.getText().isBlank()){
             if(passwordValid(passwordTextField.getText(),passwordConfirmTextField.getText())){
-                if(!userExits(usernameTextField.getText())){
                     registerUser(usernameTextField.getText(),passwordTextField.getText(),lastNameTextField.getText());
-                }
             } else {
                 registerErrorMessageLabel.setText("Provided passwords don't match.");
             }
         } else {
                 registerErrorMessageLabel.setText("Some fields are blank!");
         }
-    }
-
-    // TODO create a QueryClass
-    public boolean userExits(String username){
-        DatabaseConnection dbConnection = new DatabaseConnection();
-        Connection connection = dbConnection.getConnection();
-
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(1) FROM user WHERE username=?");
-            preparedStatement.setString(1,username);
-            ResultSet queryResult = preparedStatement.executeQuery();
-
-            queryResult.next();
-            if (queryResult.getInt(1) == 1) {
-                registerErrorMessageLabel.setText("Username already taken. Please try again with a different one!");
-                return true;
-            } else {
-                return false;
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
-            e.getCause();
-        }
-        registerErrorMessageLabel.setText("Error while checking username in the database, registration aborted");
-        return true;
     }
 
     public boolean passwordValid(String password, String confirmPassword) {
@@ -108,17 +84,17 @@ public class RegisterController implements Initializable {
         alert.showAndWait();
     }
     public void registerUser(String username, String password, String lastName){
-        DatabaseConnection dbConnection = new DatabaseConnection();
-        Connection connection = dbConnection.getConnection();
-
-        //TODO  Password hashing
-
          try {
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user (username, password, last_name) values (?,?,?)");
-             preparedStatement.setString(1,username);
-             preparedStatement.setString(2,password);
-             preparedStatement.setString(3,lastName);
-             preparedStatement.executeUpdate();
+             JSONObject jsonBody = new JSONObject();
+             jsonBody.put("username",username);
+             jsonBody.put("password",password);
+             jsonBody.put("last_name",lastName);
+             jsonBody.put("is_admin",0);
+             HttpResponse<JsonNode> postResponse = Unirest.post("http://localhost/SzolProg-Rest-uni/users/register")
+                     .header("Content-Type", "application/json")
+                     .header("Accept", "application/json")
+                     .body(jsonBody)
+                     .asJson();
              showConfirmationDialog();
              backToLogin();
          } catch (Exception e){

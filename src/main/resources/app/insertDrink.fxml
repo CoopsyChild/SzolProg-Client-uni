@@ -10,51 +10,53 @@
    <center>
       <AnchorPane prefHeight="345.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="79.0" layoutY="38.0" text="Name">
+            <Label layoutX="80.0" layoutY="289.0" text="Quantity">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <TextField fx:id="drinkNameTextField" layoutX="79.0" layoutY="57.0" prefHeight="25.0" prefWidth="247.0" promptText="Drink Name" />
-            <Label layoutX="79.0" layoutY="92.0" text="Category">
+            <TextField fx:id="drinkNameTextField" layoutX="79.0" layoutY="38.0" prefHeight="25.0" prefWidth="247.0" promptText="Drink Name" />
+            <Label layoutX="79.0" layoutY="73.0" text="Category">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <Button fx:id="insertButton" layoutX="76.0" layoutY="348.0" mnemonicParsing="false" onAction="#onInsertButtonClick" prefHeight="32.0" prefWidth="249.0" style="-fx-background-color: #E96151;" text="Add Item">
+            <Button fx:id="insertButton" layoutX="79.0" layoutY="348.0" mnemonicParsing="false" onAction="#onInsertButtonClick" prefHeight="32.0" prefWidth="249.0" style="-fx-background-color: #E96151;" text="Add Item">
                <font>
                   <Font size="13.0" />
                </font>
             </Button>
-            <Button fx:id="cancelButton" layoutX="76.0" layoutY="389.0" mnemonicParsing="false" onAction="#onCancelButtonClick" prefHeight="32.0" prefWidth="249.0" style="-fx-background-color: #E96151;" text="Cancel">
+            <Button fx:id="cancelButton" layoutX="79.0" layoutY="389.0" mnemonicParsing="false" onAction="#onCancelButtonClick" prefHeight="32.0" prefWidth="249.0" style="-fx-background-color: #E96151;" text="Cancel">
                <font>
                   <Font size="13.0" />
                </font>
             </Button>
-            <Label fx:id="registerErrorMessageLabel" alignment="CENTER" layoutX="64.0" layoutY="14.0" prefHeight="19.0" prefWidth="273.0" textFill="#ff5e5e" wrapText="true">
+            <Label fx:id="registerErrorMessageLabel" alignment="CENTER" layoutX="64.0" layoutY="427.0" prefHeight="19.0" prefWidth="273.0" textFill="#ff5e5e" wrapText="true">
                <font>
                   <Font size="11.0" />
                </font>
             </Label>
-            <Label layoutX="79.0" layoutY="146.0" text="Price">
+            <Label layoutX="79.0" layoutY="127.0" text="Price">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <Label layoutX="79.0" layoutY="200.0" text="Size">
+            <Label layoutX="79.0" layoutY="181.0" text="Size">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="categoryChoiceBox" layoutX="79.0" layoutY="111.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="priceTextField" layoutX="79.0" layoutY="165.0" prefHeight="25.0" prefWidth="247.0" promptText="Price" />
-            <TextField fx:id="sizeTextField" layoutX="79.0" layoutY="219.0" prefHeight="25.0" prefWidth="247.0" promptText="Size" />
-            <Label layoutX="79.0" layoutY="254.0" text="Item Number">
+            <ChoiceBox fx:id="categoryChoiceBox" layoutX="79.0" layoutY="92.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="priceTextField" layoutX="79.0" layoutY="146.0" prefHeight="25.0" prefWidth="247.0" promptText="Price" />
+            <TextField fx:id="sizeTextField" layoutX="79.0" layoutY="200.0" prefHeight="25.0" prefWidth="247.0" promptText="Size" />
+            <Label layoutX="79.0" layoutY="235.0" text="Item Number">
                <font>
                   <Font size="13.0" />
                </font>
             </Label>
-            <TextField fx:id="itemNumberTextField" layoutX="79.0" layoutY="273.0" prefHeight="25.0" prefWidth="247.0" promptText="Item Number" />
+            <TextField fx:id="itemNumberTextField" layoutX="79.0" layoutY="254.0" prefHeight="25.0" prefWidth="247.0" promptText="Item Number" />
+            <TextField fx:id="quantityTextField" layoutX="80.0" layoutY="308.0" prefHeight="25.0" prefWidth="246.0" />
+            <Label layoutX="79.0" layoutY="21.0" text="Name" />
          </children>
       </AnchorPane>
    </center>

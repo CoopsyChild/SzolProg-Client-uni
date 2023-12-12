@@ -1,14 +1,11 @@
 package app;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.JsonNode;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.json.JSONObject;
 
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,17 +81,14 @@ public final class APICalls {
         return null;
     }
 
-    public static List<String> selectDrinkCategoryNames(){
+    public static List<Category> selectDrinkCategories(){
         try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM drink_category");
-            List<String> categoryNames = new ArrayList<String>();
-            ResultSet queryResult = preparedStatement.executeQuery();
-            while (queryResult.next()){
-                String categoryName= queryResult.getString(1);
-                categoryNames.add(categoryName);
-            }
-            return categoryNames;
+            HttpResponse<JsonNode> getResponse = Unirest.get("http://localhost/SzolProg-Rest-uni/drink-category")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Token",UserSession.getInstance().getToken())
+                    .asJson();
+            return List.of(new Gson().fromJson(getResponse.getBody().toString(), Category[].class));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -119,34 +113,46 @@ public final class APICalls {
         return true;
     }
 
-    public static boolean insertNewDrinkForUser(String itemNumber, String name, Float size, Integer price, Integer categoryId, Integer ownerId){
+    public static boolean insertNewDrinkForUser(String itemNumber, String name, Float size, Integer price, Integer categoryId, Integer ownerId, Integer quantity){
         try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO drink_stock (item_number, name, size, price, category_id, owner_id) values (?,?,?,?,?,?)");
-            preparedStatement.setString(1,itemNumber);
-            preparedStatement.setString(2,name);
-            preparedStatement.setString(3,size.toString());
-            preparedStatement.setString(4,price.toString());
-            preparedStatement.setString(5,categoryId.toString());
-            preparedStatement.setString(6,ownerId.toString());
-            if(preparedStatement.executeUpdate()!=0) return true;
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("item_number",itemNumber);
+            jsonBody.put("name",name);
+            jsonBody.put("size",size);
+            jsonBody.put("price",price);
+            jsonBody.put("quantity",quantity);
+            jsonBody.put("category_id",categoryId);
+            jsonBody.put("owner_id",ownerId);
+            HttpResponse <JsonNode> postResponse = Unirest.post("http://localhost/SzolProg-Rest-uni/drinks")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Token", UserSession.getInstance().getToken())
+                    .body(jsonBody)
+                    .asJson();
+            return postResponse.isSuccess();
         } catch (Exception e){
             e.printStackTrace();
             e.getCause();
         }
         return false;
     }
-    public static boolean updateDrinkForUser(Integer itemId,String itemNumber, String name, Float size, Integer price, Integer categoryId){
+    public static boolean updateDrinkForUser(Integer itemId, String itemNumber, String name, Float size, Integer price, Integer categoryId, Integer quantity){
         try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE drink_stock SET item_number=?, name=?, size=?, price=?, category_id=? WHERE id=?");
-            preparedStatement.setString(1,itemNumber);
-            preparedStatement.setString(2,name);
-            preparedStatement.setString(3,size.toString());
-            preparedStatement.setString(4,price.toString());
-            preparedStatement.setString(5,categoryId.toString());
-            preparedStatement.setString(6,itemId.toString());
-            if(preparedStatement.executeUpdate()!=0) return true;
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("product_id",itemId);
+            jsonBody.put("item_number",itemNumber);
+            jsonBody.put("name",name);
+            jsonBody.put("size",size);
+            jsonBody.put("price",price);
+            jsonBody.put("quantity",quantity);
+            jsonBody.put("category_id",categoryId);
+            HttpResponse <JsonNode> postResponse = Unirest.put("http://localhost/SzolProg-Rest-uni/drinks")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Token", UserSession.getInstance().getToken())
+                    .body(jsonBody)
+                    .asJson();
+            return postResponse.isSuccess();
         } catch (Exception e){
             e.printStackTrace();
             e.getCause();
@@ -156,12 +162,11 @@ public final class APICalls {
 
     public static Integer selectDrinkCategoryIdByName(String name){
         try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM drink_category WHERE name=?");
-            preparedStatement.setString(1,name);
-            ResultSet queryResult = preparedStatement.executeQuery();
-            if(queryResult.next()) {
-                return queryResult.getInt(1);
+            List<Category> categoryObjects = APICalls.selectDrinkCategories();
+            for (Category category  : categoryObjects) {
+                if (name.equals(category.getName())) {
+                    return category.getId();
+                }
             }
             return null;
         }
@@ -173,13 +178,15 @@ public final class APICalls {
     }
     public static Boolean deleteDrinkById(Integer id){
         try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM drink_stock WHERE id=?");
-            preparedStatement.setString(1,id.toString());
-            if(preparedStatement.executeUpdate()!=0){
-                return true;
-            }
-            return false;
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("product_id",id);
+            HttpResponse <JsonNode> deleteResponse = Unirest.delete("http://localhost/SzolProg-Rest-uni/drinks")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Token", UserSession.getInstance().getToken())
+                    .body(jsonBody)
+                    .asJson();
+            return deleteResponse.getStatus()==200;
         }
         catch (Exception e) {
             e.printStackTrace();
