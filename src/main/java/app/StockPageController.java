@@ -33,6 +33,8 @@ public class StockPageController {
     @FXML
     private TableColumn<Drink,Float> size;
     @FXML
+    private TableColumn<Drink,Integer> ownerId;
+    @FXML
     private Button logoutButton;
     @FXML
     private Button deleteDrinkButton;
@@ -47,7 +49,11 @@ public class StockPageController {
         price.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("price"));
         category.setCellValueFactory(new PropertyValueFactory<Drink, String>("category"));
         size.setCellValueFactory(new PropertyValueFactory<Drink, Float>("size"));
-        drinks=FXCollections.observableArrayList(QueryHelper.selectUserDrinkStock(UserSession.getInstance().getId()));
+        if(UserSession.getInstance().getIs_admin()){
+            ownerId.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("owner_id"));
+        }
+
+        drinks=FXCollections.observableArrayList(APICalls.getUserDrinkStock());
         drinkTableView.setItems(drinks);
     }
     public void onLogoutButtonClick(){
@@ -142,7 +148,7 @@ public class StockPageController {
 
     public void onDeleteDrinkButtonClick(){
         if(drinkTableView.getSelectionModel().getSelectedItem() != null){
-            if(QueryHelper.deleteDrinkById(drinkTableView.getSelectionModel().getSelectedItem().getId())){
+            if(APICalls.deleteDrinkById(drinkTableView.getSelectionModel().getSelectedItem().getId())){
             drinkTableView.getItems().removeAll(drinkTableView.getSelectionModel().getSelectedItem());
             }
             else {

@@ -7,8 +7,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ChoiceBoxListCell;
-import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.stage.Stage;
 
 public class InsertDrinkController {
@@ -27,7 +25,7 @@ public class InsertDrinkController {
     ObservableList<String> categories;
 
     public void initialize(){
-        categories = FXCollections.observableArrayList(QueryHelper.selectDrinkCategoryNames());
+        categories = FXCollections.observableArrayList(APICalls.selectDrinkCategoryNames());
         categoryChoiceBox.setItems(categories);
     }
     public void showErrorDialog(String message, String title){
@@ -49,15 +47,15 @@ public class InsertDrinkController {
         if(!drinkNameTextField.getText().isBlank() && !sizeTextField.getText().isBlank() && !priceTextField.getText().isBlank() && !itemNumberTextField.getText().isBlank() && categoryChoiceBox.getSelectionModel().getSelectedItem() != null) {
             float size;
             int price;
-            if(QueryHelper.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem()) != null) {
+            if(APICalls.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem()) != null) {
                 try {
                     size = Float.parseFloat(sizeTextField.getText());
                     price = Integer.parseInt(priceTextField.getText());
-                    Integer categoryId = QueryHelper.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem());
+                    Integer categoryId = APICalls.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem());
                     try {
                         if(size > 0 && price >= 0) {
-                            if (!QueryHelper.isItemNumberExistsForUser(itemNumberTextField.getText(), UserSession.getInstance().getId())) {
-                                if (QueryHelper.insertNewDrinkForUser(itemNumberTextField.getText(), drinkNameTextField.getText(), size, price, categoryId, UserSession.getInstance().getId())) {
+                            if (!APICalls.isItemNumberExistsForUser(itemNumberTextField.getText(), UserSession.getInstance().getId())) {
+                                if (APICalls.insertNewDrinkForUser(itemNumberTextField.getText(), drinkNameTextField.getText(), size, price, categoryId, UserSession.getInstance().getId())) {
                                     showInfoDialog("Item successfully added!", "Success.");
                                     ((Stage) cancelButton.getScene().getWindow()).close();
                                 } else {

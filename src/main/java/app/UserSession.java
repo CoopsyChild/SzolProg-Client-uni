@@ -1,5 +1,7 @@
 package app;
 
+import com.google.gson.annotations.SerializedName;
+
 public final class UserSession {
     private static UserSession instance;
 
@@ -11,10 +13,34 @@ public final class UserSession {
         this.id = id;
     }
 
+    @SerializedName("id")
     private Integer id;
+    @SerializedName("username")
     private String username;
+    @SerializedName("last_name")
     private String lastName;
+    @SerializedName("registration_date")
     private String registrationDate;
+    @SerializedName("token")
+    private String token;
+    @SerializedName("is_admin")
+    private Boolean isAdmin;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Boolean getIs_admin() {
+        return isAdmin;
+    }
+
+    public void setIs_admin(Boolean is_admin) {
+        this.isAdmin = is_admin;
+    }
 
     private UserSession() {
     }
@@ -51,6 +77,8 @@ public final class UserSession {
 
     public void clearUserSession() {
         username = null;
+        token = null;
+        isAdmin = null;
         lastName = null;
         registrationDate = null;
         instance=null;

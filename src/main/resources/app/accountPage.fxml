@@ -11,7 +11,7 @@
          <children>
             <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="63.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="C:\Users\ffark\Downloads\40868437.png" />
+                  <Image url="@../img/logo.png" />
                </image>
             </ImageView>
             <Button layoutX="10.0" layoutY="160.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="157.0" style="-fx-background-color: #E96151;" text="Account" textFill="WHITE" AnchorPane.bottomAnchor="201.0">
@@ -39,7 +39,7 @@
                <children>
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="C:\Users\ffark\Downloads\40868437.png" />
+                        <Image url="@../img/logo.png" />
                      </image></ImageView>
                   <Label layoutX="53.0" layoutY="27.0" text="Hello," textFill="#ff4b33">
                      <font>

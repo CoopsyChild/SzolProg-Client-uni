@@ -18,10 +18,6 @@ public class AccountPageController {
     @FXML
     private PasswordField newPassConfirmField;
     @FXML
-    private Button newPassSubmitButton;
-    @FXML
-    private Button exitButton;
-    @FXML
     private TextField newLastNameTextField;
     @FXML
     private Button logoutButton;
@@ -41,7 +37,7 @@ public class AccountPageController {
     public void onNewPassSubmitButton(){
         if(!newPassField.getText().isBlank() && !newPassConfirmField.getText().isBlank()) {
             if (newPassField.getText().equals(newPassConfirmField.getText())) {
-                QueryHelper.updateUserPassword(UserSession.getInstance().getId(),newPassField.getText());
+                APICalls.updateUserPassword(UserSession.getInstance().getId(),newPassField.getText());
                 showInfoDialog("Password successfully updated","Success!");
             } else {
                 showErrorDialog("Provided passwords don't match. Please try again","Match Error");
@@ -69,7 +65,7 @@ public class AccountPageController {
 
     public void onNewLastNameSubmitButtonClick(){
         if(!newLastNameTextField.getText().isBlank()) {
-            if(!QueryHelper.updateUserLastName(UserSession.getInstance().getLastName(), UserSession.getInstance().getId(), newLastNameTextField.getText()).equals(UserSession.getInstance().getLastName())) {
+            if(!APICalls.updateUserLastName(UserSession.getInstance().getLastName(), UserSession.getInstance().getId(), newLastNameTextField.getText()).equals(UserSession.getInstance().getLastName())) {
                 showInfoDialog("Last name successfully changed!","Success!");
                 UserSession.getInstance().setLastName(newLastNameTextField.getText());
                 lastNameLabel.setText(UserSession.getInstance().getLastName());

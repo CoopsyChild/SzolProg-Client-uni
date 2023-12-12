@@ -1,5 +1,9 @@
 package app;
 
+
+import com.google.gson.Gson;
+
+import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,21 +16,22 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.stage.StageStyle;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.JsonNode;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.json.JSONObject;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.net.URL;
+
 
 public class LoginController implements Initializable {
     @FXML
     private Label loginErrorMessageLabel;
     @FXML
     private Button cancelButton;
-    @FXML
-    private Button loginButton;
     @FXML
     private TextField usernameTextField;
     @FXML
@@ -59,6 +64,7 @@ public class LoginController implements Initializable {
         }
     }
     public void onLoginButtonClick(ActionEvent event) {
+        loginErrorMessageLabel.setText("");
         if (!passwordTextField.getText().isBlank() && !usernameTextField.getText().isBlank()){
             validateLogin(usernameTextField.getText(),passwordTextField.getText());
         } else {
@@ -73,31 +79,31 @@ public class LoginController implements Initializable {
             }
         }
     }
-    public void createUserSession(Integer userId){
-        User userData= QueryHelper.selectUserData(userId);
-        if (userData != null){
+    public void createUserSession(HttpResponse<JsonNode> login, String username){
+        JSONObject jsonResponse = login.getBody().getObject();
+        if (jsonResponse != null){
             var session = UserSession.getInstance();
-            session.setId(userId);
-            session.setLastName(userData.getLastName());
-            session.setUsername(userData.getUsername());
-            session.setRegistrationDate(userData.getRegistrationDate());
+            session.setId(jsonResponse.getInt("id"));
+            session.setLastName(jsonResponse.getString("last_name"));
+            session.setUsername(username);
+            session.setRegistrationDate(jsonResponse.getString("registration_date"));
+            session.setToken(jsonResponse.getString("token"));
+            session.setIs_admin(jsonResponse.getInt("is_admin") == 1);
         }
-
     }
     public void validateLogin(String username, String password){
         //TODO  Password hashing
-
          try {
-             DatabaseConnection dbConnection = new DatabaseConnection();
-             Connection connection = dbConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(1) FROM user WHERE username=? AND password=?");
-             preparedStatement.setString(1,username);
-             preparedStatement.setString(2,password);
-             ResultSet queryResult = preparedStatement.executeQuery();
-
-             while (queryResult.next()){
-                 if (queryResult.getInt(1) == 1) {
-                     createUserSession(QueryHelper.selectUserIdByUsername(username));
+             JSONObject jsonBody = new JSONObject();
+             jsonBody.put("username",username);
+             jsonBody.put("password",password);
+             HttpResponse <JsonNode> loginResponse = Unirest.post("http://localhost/SzolProg-Rest-uni/users/login")
+                     .header("Content-Type", "application/json")
+                     .header("Accept", "application/json")
+                     .body(jsonBody)
+                     .asJson();
+                 if (loginResponse.getStatus() == 200) {
+                     createUserSession(loginResponse, username);
                      try {
                          Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("accountPage.fxml")));
                          Stage loginStage = new Stage();
@@ -113,7 +119,6 @@ public class LoginController implements Initializable {
                  } else {
                      loginErrorMessageLabel.setText("Invalid Username or Password. Please try again!");
                  }
-             }
          } catch (Exception e){
              e.printStackTrace();
              e.getCause();

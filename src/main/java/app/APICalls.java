@@ -1,20 +1,22 @@
 package app;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.JsonNode;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.json.JSONObject;
 
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public final class QueryHelper {
-    private QueryHelper() { // private constructor
+public final class APICalls {
+    private APICalls() { // private constructor
     }
     public static Connection dBconnection(){
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -186,19 +188,14 @@ public final class QueryHelper {
         return false;
     }
 
-    public static List<Drink> selectUserDrinkStock(Integer id){
+    public static List<Drink> getUserDrinkStock(){
         try {
-            Connection connection = dBconnection();
-            List<Drink> drinkList=new ArrayList<Drink>();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, item_number, name, size, price, category_id FROM drink_stock WHERE owner_id=?");
-            preparedStatement.setString(1,id.toString());
-            ResultSet queryResult = preparedStatement.executeQuery();
-
-            while (queryResult.next()){
-                Drink drink= new Drink(queryResult.getInt(1), queryResult.getString(2), queryResult.getString(3), queryResult.getFloat(4), queryResult.getInt(5),getCategoryName(queryResult.getInt(6)) );
-                drinkList.add(drink);
-            }
-            return drinkList;
+            HttpResponse<JsonNode> getResponse = Unirest.get("http://localhost/SzolProg-Rest-uni/drinks")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Token",UserSession.getInstance().getToken())
+                    .asJson();
+            return List.of(new Gson().fromJson(getResponse.getBody().toString(), Drink[].class));
         } catch (Exception e){
             e.printStackTrace();
             e.getCause();

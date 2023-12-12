@@ -64,7 +64,7 @@
                </opaqueInsets></Label>
             <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="29.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="C:\Users\ffark\Downloads\40868437.png" />
+                  <Image url="@../img/logo.png" />
                </image>
             </ImageView>
          </children>

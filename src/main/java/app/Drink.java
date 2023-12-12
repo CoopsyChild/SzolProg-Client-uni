@@ -10,6 +10,16 @@ public class Drink {
         this.category = category;
     }
 
+    public Drink(Integer id, String itemNumber, String name, Float size, Integer price, String category, Integer ownerId) {
+        this.id = id;
+        this.itemNumber = itemNumber;
+        this.name = name;
+        this.size = size;
+        this.price = price;
+        this.category = category;
+        this.ownerId = ownerId;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -64,5 +74,15 @@ public class Drink {
     private Float size;
     private Integer price;
     private String category;
+
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    private Integer ownerId;
 
 }

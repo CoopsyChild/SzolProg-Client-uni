@@ -35,7 +35,7 @@ public class UpdateDrinkController {
         initialItemNumber=selectedDrink.getItemNumber();
     }
     public void initialize(){
-        categories = FXCollections.observableArrayList(QueryHelper.selectDrinkCategoryNames());
+        categories = FXCollections.observableArrayList(APICalls.selectDrinkCategoryNames());
         categoryChoiceBox.setItems(categories);
     }
     public void onCancelButtonClick(){
@@ -45,15 +45,15 @@ public class UpdateDrinkController {
         if(!drinkNameTextField.getText().isBlank() && !sizeTextField.getText().isBlank() && !priceTextField.getText().isBlank() && !itemNumberTextField.getText().isBlank() && categoryChoiceBox.getSelectionModel().getSelectedItem() != null) {
             float size;
             int price;
-            if(QueryHelper.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem()) != null) {
+            if(APICalls.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem()) != null) {
                 try {
                     size = Float.parseFloat(sizeTextField.getText());
                     price = Integer.parseInt(priceTextField.getText());
-                    Integer categoryId = QueryHelper.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem());
+                    Integer categoryId = APICalls.selectDrinkCategoryIdByName(categoryChoiceBox.getSelectionModel().getSelectedItem());
                     try {
                         if(size > 0 && price >= 0) {
-                            if (initialItemNumber.equals(itemNumberTextField.getText()) || !QueryHelper.isItemNumberExistsForUser(itemNumberTextField.getText(), UserSession.getInstance().getId())) {
-                                if (QueryHelper.updateDrinkForUser(itemId, itemNumberTextField.getText(), drinkNameTextField.getText(), size, price, categoryId)) {
+                            if (initialItemNumber.equals(itemNumberTextField.getText()) || !APICalls.isItemNumberExistsForUser(itemNumberTextField.getText(), UserSession.getInstance().getId())) {
+                                if (APICalls.updateDrinkForUser(itemId, itemNumberTextField.getText(), drinkNameTextField.getText(), size, price, categoryId)) {
                                     showInfoDialog("Item successfully updated!", "Success.");
                                     ((Stage) cancelButton.getScene().getWindow()).close();
                                 } else {
