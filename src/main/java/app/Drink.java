@@ -1,8 +1,11 @@
 package app;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Drink {
-    public Drink(Integer id, String itemNumber, String name, Float size, Integer price, String category) {
+    public Drink(Integer id,Integer quantity, String itemNumber, String name, Float size, Integer price, String category) {
         this.id = id;
+        this.quantity=quantity;
         this.itemNumber = itemNumber;
         this.name = name;
         this.size = size;
@@ -10,8 +13,9 @@ public class Drink {
         this.category = category;
     }
 
-    public Drink(Integer id, String itemNumber, String name, Float size, Integer price, String category, Integer ownerId) {
+    public Drink(Integer id,Integer quantity, String itemNumber, String name, Float size, Integer price, String category, Integer ownerId) {
         this.id = id;
+        this.quantity=quantity;
         this.itemNumber = itemNumber;
         this.name = name;
         this.size = size;
@@ -68,12 +72,39 @@ public class Drink {
         this.category = category;
     }
 
+    @SerializedName("id")
     private Integer id;
+    @SerializedName("item_number")
     private String itemNumber;
+    @SerializedName("name")
     private String name;
+    @SerializedName("size")
     private Float size;
+    @SerializedName("price")
     private Integer price;
+
+    private String categoryName;
+    @SerializedName("category_id")
     private String category;
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    @SerializedName("quantity")
+    private Integer quantity;
 
     public Integer getOwnerId() {
         return ownerId;
@@ -83,6 +114,7 @@ public class Drink {
         this.ownerId = ownerId;
     }
 
+    @SerializedName("owner_id")
     private Integer ownerId;
 
 }

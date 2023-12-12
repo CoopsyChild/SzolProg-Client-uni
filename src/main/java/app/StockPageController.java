@@ -29,6 +29,8 @@ public class StockPageController {
     @FXML
     private TableColumn<Drink,Integer> price;
     @FXML
+    private TableColumn<Drink,Integer> quantity;
+    @FXML
     private TableColumn<Drink,String> category;
     @FXML
     private TableColumn<Drink,Float> size;
@@ -47,14 +49,16 @@ public class StockPageController {
         id.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("id"));
         itemNumber.setCellValueFactory(new PropertyValueFactory<Drink, String>("itemNumber"));
         price.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("price"));
+        quantity.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("quantity"));
         category.setCellValueFactory(new PropertyValueFactory<Drink, String>("category"));
         size.setCellValueFactory(new PropertyValueFactory<Drink, Float>("size"));
-        if(UserSession.getInstance().getIs_admin()){
-            ownerId.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("owner_id"));
-        }
-
+        ownerId.setCellValueFactory(new PropertyValueFactory<Drink, Integer>("ownerId"));
         drinks=FXCollections.observableArrayList(APICalls.getUserDrinkStock());
         drinkTableView.setItems(drinks);
+        if(!UserSession.getInstance().getIs_admin()) {
+            ownerId.setVisible(false);
+            id.setVisible(false);
+        }
     }
     public void onLogoutButtonClick(){
         try {

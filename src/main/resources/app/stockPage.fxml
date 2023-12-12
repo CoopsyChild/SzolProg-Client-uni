@@ -71,11 +71,11 @@
                       <TableColumn fx:id="id" prefWidth="25.0" text="ID" />
                       <TableColumn fx:id="itemNumber" prefWidth="114.0" text="Item Number" />
                         <TableColumn fx:id="name" prefWidth="168.0" text="Name" />
-                        <TableColumn prefWidth="59.0" text="Quantity" />
+                        <TableColumn fx:id="quantity" prefWidth="59.0" text="Quantity" />
                         <TableColumn fx:id="size" minWidth="0.0" prefWidth="54.0" text="Size" />
                         <TableColumn fx:id="price" minWidth="0.0" prefWidth="94.0" text="Price" />
                         <TableColumn fx:id="category" minWidth="0.0" prefWidth="113.0" text="Category" />
-                        <TableColumn prefWidth="64.0" text="Owner_id" />
+                        <TableColumn fx:id="ownerId" prefWidth="64.0" text="Owner Id" />
                     </columns>
                   </TableView>
                </children>
