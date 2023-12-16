@@ -37,8 +37,9 @@ public class AccountPageController {
     public void onNewPassSubmitButton(){
         if(!newPassField.getText().isBlank() && !newPassConfirmField.getText().isBlank()) {
             if (newPassField.getText().equals(newPassConfirmField.getText())) {
-                APICalls.updateUserPassword(UserSession.getInstance().getId(),newPassField.getText());
-                showInfoDialog("Password successfully updated","Success!");
+                if(APICalls.updateUserData(UserSession.getInstance().getId(),newPassField.getText(),"")) {
+                    showInfoDialog("Password successfully updated", "Success!");
+                }
             } else {
                 showErrorDialog("Provided passwords don't match. Please try again","Match Error");
             }
@@ -65,7 +66,7 @@ public class AccountPageController {
 
     public void onNewLastNameSubmitButtonClick(){
         if(!newLastNameTextField.getText().isBlank()) {
-            if(!APICalls.updateUserLastName(UserSession.getInstance().getLastName(), UserSession.getInstance().getId(), newLastNameTextField.getText()).equals(UserSession.getInstance().getLastName())) {
+            if(APICalls.updateUserData(UserSession.getInstance().getId(),"",newLastNameTextField.getText())) {
                 showInfoDialog("Last name successfully changed!","Success!");
                 UserSession.getInstance().setLastName(newLastNameTextField.getText());
                 lastNameLabel.setText(UserSession.getInstance().getLastName());

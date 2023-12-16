@@ -58,8 +58,6 @@ public class RegisterController implements Initializable {
         }
 
     }
-
-    // TODO Validator Class or ?Interface?
     public void onRegisterButtonClick(ActionEvent event) {
         if (!passwordTextField.getText().isBlank() && !usernameTextField.getText().isBlank() && !passwordConfirmTextField.getText().isBlank() && !lastNameTextField.getText().isBlank()){
             if(passwordValid(passwordTextField.getText(),passwordConfirmTextField.getText())){
@@ -74,6 +72,14 @@ public class RegisterController implements Initializable {
 
     public boolean passwordValid(String password, String confirmPassword) {
         return password.equals(confirmPassword);
+    }
+
+    public void userAlreadyExitsDialog(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("User with Username already exits");
+        alert.setHeaderText(null);
+        alert.setContentText("Failed Registration! User account with username already exits, please use a different one.");
+        alert.showAndWait();
     }
 
     public void showConfirmationDialog(){
@@ -95,8 +101,13 @@ public class RegisterController implements Initializable {
                      .header("Accept", "application/json")
                      .body(jsonBody)
                      .asJson();
-             showConfirmationDialog();
-             backToLogin();
+             if(postResponse.getStatus()==400)
+             {
+                 userAlreadyExitsDialog();
+             } else {
+                 showConfirmationDialog();
+                 backToLogin();
+             }
          } catch (Exception e){
              e.printStackTrace();
              e.getCause();

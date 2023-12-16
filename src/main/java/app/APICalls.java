@@ -15,72 +15,32 @@ import java.util.List;
 public final class APICalls {
     private APICalls() { // private constructor
     }
-    public static Connection dBconnection(){
-        DatabaseConnection dbConnection = new DatabaseConnection();
-        return dbConnection.getConnection();
-    }
-    public static Integer selectUserIdByUsername(String username){
+    public static boolean updateUserData(Integer userId,String newPassword, String newLastName){
         try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM user WHERE username=?");
-            preparedStatement.setString(1,username);
-            ResultSet queryResult = preparedStatement.executeQuery();
-            queryResult.next();
-            return queryResult.getInt(1);
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("user_id",userId);
+            if(!newLastName.isEmpty())
+            {
+                jsonBody.put("last_name",newLastName);
+            }
+            if(!newPassword.isEmpty())
+            {
+                jsonBody.put("password",newPassword);
+            }
+            HttpResponse <JsonNode> postResponse = Unirest.put("http://localhost/SzolProg-Rest-uni/users")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Token", UserSession.getInstance().getToken())
+                    .body(jsonBody)
+                    .asJson();
+            return postResponse.isSuccess();
         }
         catch (Exception e) {
             e.printStackTrace();
             e.getCause();
         }
-        return null;
+        return false;
     }
-    public static User selectUserData(Integer id){
-        try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, username, password, registration_date, last_name FROM user WHERE id=?");
-            preparedStatement.setString(1,id.toString());
-            ResultSet queryResult = preparedStatement.executeQuery();
-            queryResult.next();
-            return new User(queryResult.getString(2),queryResult.getString(5),queryResult.getString(4));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return null;
-    }
-
-    public static Integer updateUserPassword(Integer id, String newPassword){
-        try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE user SET password=? WHERE id=?");
-            preparedStatement.setString(1,newPassword);
-            preparedStatement.setString(2,id.toString());
-            return preparedStatement.executeUpdate();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return 0;
-    }
-
-    public static String getCategoryName(Integer id){
-        try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT name FROM drink_category WHERE id=?");
-            preparedStatement.setString(1,id.toString());
-            ResultSet queryResult = preparedStatement.executeQuery();
-            queryResult.next();
-            return queryResult.getString(1);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return null;
-    }
-
     public static List<Category> selectDrinkCategories(){
         try {
             HttpResponse<JsonNode> getResponse = Unirest.get("http://localhost/SzolProg-Rest-uni/drink-category")
@@ -96,23 +56,6 @@ public final class APICalls {
         }
         return null;
     }
-
-    public static boolean isItemNumberExistsForUser(String itemNumber,Integer userId) {
-        try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(1) FROM drink_stock WHERE item_number=? AND owner_id=?");
-            preparedStatement.setString(1, itemNumber);
-            preparedStatement.setString(2, userId.toString());
-            ResultSet queryResult = preparedStatement.executeQuery();
-            queryResult.next();
-            return queryResult.getInt(1) > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return true;
-    }
-
     public static boolean insertNewDrinkForUser(String itemNumber, String name, Float size, Integer price, Integer categoryId, Integer ownerId, Integer quantity){
         try {
             JSONObject jsonBody = new JSONObject();
@@ -194,7 +137,6 @@ public final class APICalls {
         }
         return false;
     }
-
     public static List<Drink> getUserDrinkStock(){
         try {
             HttpResponse<JsonNode> getResponse = Unirest.get("http://localhost/SzolProg-Rest-uni/drinks")
@@ -208,25 +150,5 @@ public final class APICalls {
             e.getCause();
         }
         return null;
-    }
-
-    public static String updateUserLastName(String currentUsername, Integer id, String newUsername) {
-        try {
-            Connection connection = dBconnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE user SET last_name=? WHERE id=?");
-            preparedStatement.setString(1,newUsername);
-            preparedStatement.setString(2,id.toString());
-            if(preparedStatement.executeUpdate()>0){
-                return newUsername;
-            }
-            else {
-                return currentUsername;
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            e.getCause();
-        }
-        return currentUsername;
     }
 }

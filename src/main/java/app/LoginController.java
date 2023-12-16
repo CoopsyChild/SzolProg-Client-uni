@@ -92,7 +92,6 @@ public class LoginController implements Initializable {
         }
     }
     public void validateLogin(String username, String password){
-        //TODO  Password hashing
          try {
              JSONObject jsonBody = new JSONObject();
              jsonBody.put("username",username);
